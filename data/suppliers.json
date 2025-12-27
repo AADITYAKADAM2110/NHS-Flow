@@ -1,0 +1,11 @@
+[
+    {
+        "supplier_id": "SUP001",
+        "name": "MediSupply Co.",
+        "location": "Birmingham",
+        "delivery_time_hours": 12,
+        "cost_per_unit": 2.5,
+        "gdpr_compliant": true,
+        "nhs_approved": true
+    }
+]
