@@ -12,9 +12,9 @@ from logistics_agent import plan_delivery
 from compliance_agent import check_compliance
 from datetime import datetime
 
-ward = json.load(open(r"C:\Users\DELL\Desktop\NHS-Flow\data\ward_state.json"))
-suppliers = json.load(open(r"C:\Users\DELL\Desktop\NHS-Flow\data\suppliers.json"))
-rules = json.load(open(r"C:\Users\DELL\Desktop\NHS-Flow\data\rules.json"))
+ward = json.load(open(r"data\ward_state.json"))
+suppliers = json.load(open(r"data\suppliers.json"))
+rules = json.load(open(r"data\rules.json"))
 
 decision = {}
 
@@ -65,7 +65,7 @@ else:
     }
 
 
-LOG_FILE = r"C:\Users\DELL\Desktop\NHS-Flow\data\decision.json"
+LOG_FILE = r"data\decision.json"
    
 decision["timestamp"] = datetime.now().isoformat()
 
