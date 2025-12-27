@@ -1,32 +1,36 @@
 [
   {
+    "ward": {
+      "hospital": "St Thomas' Hospital",
+      "ward": "General Medicine",
+      "item": "nursing_gloves",
+      "current_stock": 120,
+      "daily_usage": 50,
+      "critical_threshold": 60
+    },
+    "supplier_data": [
+      {
+        "supplier_id": "SUP001",
+        "name": "MediSupply Co.",
+        "location": "Birmingham",
+        "delivery_time_hours": 12,
+        "cost_per_unit": 2.5,
+        "gdpr_compliant": true,
+        "nhs_approved": true
+      }
+    ],
+    "rules": {
+      "allow_only_nhs_approved_suppliers": true,
+      "require_gdpr_compliance": true,
+      "human_approval_required": true
+    },
     "shortage_detected": true,
-    "item": "nursing_gloves",
     "supplier": "MediSupply Co.",
     "eta_hours": 12,
     "cost": 250.0,
+    "supplier_compliant": true,
     "approved_by_human": true,
     "final_status": "SCHEDULED",
-    "timestamp": "2025-12-27T23:35:42.490601"
-  },
-  {
-    "shortage_detected": true,
-    "item": "nursing_gloves",
-    "supplier": "MediSupply Co.",
-    "eta_hours": 12,
-    "cost": 250.0,
-    "approved_by_human": false,
-    "final_status": "REJECTED",
-    "timestamp": "2025-12-27T23:35:47.143173"
-  },
-  {
-    "shortage_detected": true,
-    "item": "nursing_gloves",
-    "supplier": "MediSupply Co.",
-    "eta_hours": 12,
-    "cost": 250.0,
-    "approved_by_human": true,
-    "final_status": "SCHEDULED",
-    "timestamp": "2025-12-27T23:55:23.191915"
+    "timestamp": "2025-12-28T00:52:18.430099"
   }
 ]
