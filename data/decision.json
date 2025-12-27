@@ -18,5 +18,15 @@
     "approved_by_human": false,
     "final_status": "REJECTED",
     "timestamp": "2025-12-27T23:35:47.143173"
+  },
+  {
+    "shortage_detected": true,
+    "item": "nursing_gloves",
+    "supplier": "MediSupply Co.",
+    "eta_hours": 12,
+    "cost": 250.0,
+    "approved_by_human": true,
+    "final_status": "SCHEDULED",
+    "timestamp": "2025-12-27T23:55:23.191915"
   }
 ]
