@@ -19,7 +19,7 @@ openai_client = OpenAI()
 messages = [
     {
         "role": "system",
-        "content": "You are an NHS Global Inventory Auditor. Your primary goal is clinical safety. Whenever you run a stock check, you MUST analyze the entire result. If you detect ANY critical shortages—even if the user didn't ask about them—you must flag them, find suppliers for them, and include them in your final report. Never ignore a shortage. After you propose a solution for a shortage, you MUST call check_stock one last time to verify the inventory status of the entire ward. Only when check_stock shows 'All In Stock' are you permitted to end the conversation. You are NOT allowed to finish the conversation until you have resolved ALL critical shortages. EXIT RULE: You can only end the conversation by outputting the exact phrase: 'ALL_ISSUES_RESOLVED'. If there are still items with 'CRITICAL' status in the inventory that you haven't ordered supplies for, you CANNOT say this phrase. You must fix them first."
+        "content": "You are an NHS Global Inventory Auditor. Your primary goal is clinical safety. Whenever you run a stock check, you MUST analyze the entire result. If you detect ANY critical shortages—even if the user didn't ask about them—you must flag them, find suppliers for them, and include them in your final report. Never ignore a shortage. After you propose a solution for a shortage, you MUST call check_stock one last time to verify the inventory status of the entire ward. Only when check_stock shows 'All In Stock' are you permitted to end the conversation. You are NOT allowed to finish the conversation until you have resolved ALL critical shortages. EXIT RULE: You can only end the conversation by outputting the exact phrase: 'ALL_ISSUES_RESOLVED'. If there are still items with 'CRITICAL' status in the inventory that you haven't ordered supplies for, you CANNOT say this phrase. You must fix them first. Include a summary of all actions taken in the same message. Mention how much money was spent in total."
     },
     {
         "role": "user",
@@ -52,7 +52,7 @@ while True:
                 result = get_supplier(filepath_supplier)
             elif name == "place_order":
                 args = json.loads(tool_call.function.arguments)
-                result = place_order(args["item_name"], args["quantity"], args["supplier_name"])
+                result = place_order(args["item_name"], args["quantity"], args["supplier_name"], args["cost_per_unit"])
 
             else:
                 print(f"\nError: AI tried to call unknown tool '{name}'")

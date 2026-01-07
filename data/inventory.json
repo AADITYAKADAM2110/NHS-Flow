@@ -4,7 +4,7 @@
         "name": "N95 Respirator Mask",
         "category": "PPE",
         "location": "Ward 4 (ICU)",
-        "current_stock": 155,
+        "current_stock": 20,
         "min_threshold": 50,
         "unit": "box",
         "last_updated": "Just Now"
@@ -14,7 +14,7 @@
         "name": "Paracetamol IV 10mg",
         "category": "Medication",
         "location": "Pharmacy Storage",
-        "current_stock": 65,
+        "current_stock": 5,
         "min_threshold": 20,
         "unit": "vial",
         "last_updated": "Just Now"

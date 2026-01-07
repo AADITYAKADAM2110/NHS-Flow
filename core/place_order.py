@@ -1,8 +1,9 @@
 import json
+from session_variables import SESSION_BUDGET, TOTAL_SPENT
 
 filepath = r"data/inventory.json"
 
-def place_order(item_name: str, quantity: int, supplier_info):
+def place_order(item_name: str, quantity: int, supplier_info, cost_per_unit: float = 0.0) -> str:
     """
     Simulates placing an order for a given item from a supplier.
     Updates inventory records accordingly.
@@ -11,7 +12,16 @@ def place_order(item_name: str, quantity: int, supplier_info):
         item_name (str): The name of the item to order.
         quantity (int): The quantity of the item to order.
         supplier_info (dict): Information about the supplier.
+        cost_per_unit (float): Cost per unit of the item.
     """
+
+    global TOTAL_SPENT, SESSION_BUDGET
+
+    total_cost = float(cost_per_unit) * int(quantity)
+
+    if (TOTAL_SPENT + total_cost) > SESSION_BUDGET:
+        remaining_budget = SESSION_BUDGET - TOTAL_SPENT
+        return f"ERROR: Cannot place order. Budget exceeded by {total_cost - remaining_budget:.2f} GBP. Remaining budget: {remaining_budget:.2f} GBP. Request Manual approval."
 
     try: 
         with open(filepath, 'r') as file:
@@ -31,7 +41,9 @@ def place_order(item_name: str, quantity: int, supplier_info):
         with open(filepath, 'w') as file:
             json.dump(inventory, file, indent=4)
 
-        return f"SUCCESS: Stock updated. New level: {item['current_stock']}. Ordered {quantity} from {supplier_info['name']}."
+        TOTAL_SPENT += total_cost
+        return f"SUCCESS: Order placed for {quantity} of '{item_name}' from {supplier_info['name']}. Total cost: {total_cost:.2f} GBP. Total spent this session: {TOTAL_SPENT:.2f} GBP."
+        
     
     except Exception as e:
         return f"ERROR: {str(e)}"

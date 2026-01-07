@@ -56,9 +56,13 @@ tools = [
                 "quantity": {
                     "type": "integer",
                     "description": "The quantity of the item to order."
+                },
+                "cost_per_unit": {
+                    "type": "number",
+                    "description": "Cost per unit of the item."
                 }
             },
-            "required": ["supplier_name", "item_name", "quantity"]
+            "required": ["supplier_name", "item_name", "quantity", "cost_per_unit"]
         }
     }
 }
