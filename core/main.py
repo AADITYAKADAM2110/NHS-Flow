@@ -31,3 +31,23 @@ def check_stock(file_path):
     
     return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print
 
+
+# Define the tool for openai
+
+tools_schema = {
+    "type": "function",
+    "function": {
+        "name": "check_stock",
+        "description": "Check the inventory stock levels from a JSON file.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The path to the inventory JSON file."
+                }
+            },
+            "required": ["file_path"]
+        }
+    }
+}
