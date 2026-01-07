@@ -1,110 +1,76 @@
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
+from check_stock_function import check_stock
+from get_supplier_function import get_supplier
+from tools import tools
 
 load_dotenv()
 
 # datasource
 filepath = r"data/inventory.json"
+filepath_supplier = r"data/suppliers.json"
 
 
-def check_stock(file_path):
-    """The actual python function that reads the file."""
-    # Logic fix: Only read the file once
-    try:
-        with open(file_path, 'r') as file:
-            inventory = json.load(file)
-    except FileNotFoundError:
-        return "Error: Inventory file not found."
-
-    inventory_status = {}
-    for item in inventory:
-        name = item.get('name')
-        quantity = item.get('current_stock', 0)
-        min_threshold = item.get('min_threshold', 0)
-
-        # Logic fix: Correctly check stock levels
-        if quantity < min_threshold:
-            inventory_status[name] = f"CRITICAL: {quantity} (Need {min_threshold})"
-        else:
-            inventory_status[name] = "In Stock"
-    
-    return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print
-
-
-# Define the tool for openai
-
-tools = [
-    {
-    "type": "function",
-    "function": {
-        "name": "check_stock",
-        "description": "Check the inventory stock levels from a JSON file.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "file_path": {
-                    "type": "string",
-                    "description": "The path to the inventory JSON file."
-                }
-            },
-            "required": ["file_path"]
-        }
-    }
-}
-]
 
 openai_client = OpenAI()
 
 messages = [
     {
         "role": "system",
-        "content": "You are a Ward Manager. You have a tool called check_stock. Always use it before answering."
+        "content": "You are an NHS Global Inventory Auditor. Your primary goal is clinical safety. Whenever you run a stock check, you MUST analyze the entire result. If you detect ANY critical shortages—even if the user didn't ask about them—you must flag them, find suppliers for them, and include them in your final report. Never ignore a shortage. After you propose a solution for a shortage, you MUST call check_stock one last time to verify the inventory status of the entire ward. Only when check_stock shows 'All In Stock' are you permitted to end the conversation. You are NOT allowed to finish the conversation until you have resolved ALL critical shortages. EXIT RULE: You can only end the conversation by outputting the exact phrase: 'ALL_ISSUES_RESOLVED'. If there are still items with 'CRITICAL' status in the inventory that you haven't ordered supplies for, you CANNOT say this phrase. You must fix them first."
     },
     {
         "role": "user",
-        "content": "Do we have enough N95 masks?"
+        "content": "Are we in stock? and if not, who can supply them to us quickly?"
     }
 ]
 
-# first call: AI decides to use the tool
-response = openai_client.chat.completions.create(
-    model="gpt-4.1-nano",
-    messages=messages,
-    tools=tools
-)
+# The infinite loop to keep the conversation going
+while True:
+    response = openai_client.chat.completions.create(
+        model="gpt-4.1-nano",
+        messages=messages,
+        tools=tools,
+    )
 
-assistant_message = response.choices[0].message
-
-# if-else logic to handle tool usage
-
-if assistant_message.tool_calls:
-
-    #IMPORTANT: Append the assistant message before tool calls
+    assistant_message = response.choices[0].message
     messages.append(assistant_message)
 
-    # Process each tool call
-    for tool_call in assistant_message.tool_calls:
-        function_name = tool_call.function.name
+    # If the AI is done talking and does not want to use a tool, break the loop
+    if assistant_message.tool_calls:
+        print("\n Agent is acting...\n")
 
-        if function_name != "check_stock":
-            print(f"Running tool: {function_name}...")
+        for tool_call in assistant_message.tool_calls:
+            name = tool_call.function.name
+            print(f"Calling tool: {name} (ID: {tool_call.id})")
 
-        # step A: run your python function
-        result = check_stock(filepath)
+            if name == "check_stock":
+                result = check_stock(filepath)
+            elif name == "get_supplier":
+                result = get_supplier(filepath_supplier)
 
-        # step B: append the tool response to the messages
-        messages.append({
-            "role": "tool",
-            "tool_call_id": tool_call.id, #receipt id
-            "content": result # actual data from the function
-        })
+            else:
+                print(f"\nError: AI tried to call unknown tool '{name}'")
+                result = f"Error: The tool '{name}' does not exist. Please use 'check_stock' or 'get_supplier'."
 
-    final_response = openai_client.chat.completions.create(
-        model="gpt-4.1-nano",
-        messages=messages
-    )
-    print(f"\nNHS Ward Manager: {final_response.choices[0].message.content}")
-else:
-    print(f"\nNHS Ward Manager: {assistant_message.content}")
+            messages.append(
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": str(result)
+                }
+            ) 
+    else:
+        final_message = assistant_message.content
 
+        if "ALL_ISSUES_RESOLVED" in final_message:
+            print("\n✅ NHS Final Report (Authorized):", final_message.replace("ALL_ISSUES_RESOLVED", ""))
+            break
+
+        else:
+            print("Agent tried to quit early! Kicking it back...")
+            messages.append(
+                {"role": "user", "content": "You did NOT output the confirmation phrase 'ALL_ISSUES_RESOLVED'. This means you might have missed an item. Check the inventory again and fix ANY remaining shortages."}
+            )
+            continue
