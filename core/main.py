@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv(load_dotenv=True)
 
+# datasource
 filepath = r"data/inventory.json"
 
 
@@ -21,11 +22,12 @@ def check_stock(file_path):
         name = item.get('name')
         quantity = item.get('current_stock', 0)
         min_threshold = item.get('min_threshold', 0)
+
+        # Logic fix: Correctly check stock levels
         if quantity < min_threshold:
-            inventory_status[name] = f"Low Stock - {min_threshold} required"
+            inventory_status[name] = f"CRITICAL: {quantity} (Need {min_threshold})"
         else:
             inventory_status[name] = "In Stock"
-            print("Inventory Status:")
-            print(inventory_status)
-    return inventory_status
+    
+    return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print
 
