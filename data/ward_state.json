@@ -1,8 +1,0 @@
-{
-    "hospital": "St Thomas' Hospital",
-    "ward": "General Medicine",
-    "item": "nursing_gloves",
-    "current_stock": 120,
-    "daily_usage": 50,
-    "critical_threshold": 60
-}

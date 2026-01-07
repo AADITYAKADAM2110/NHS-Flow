@@ -1,0 +1,32 @@
+[
+  {
+    "item_id": "PPE-N95-001",
+    "name": "N95 Respirator Mask",
+    "category": "PPE",
+    "location": "Ward 4 (ICU)",
+    "current_stock": 15,
+    "min_threshold": 50,
+    "unit": "box",
+    "last_updated": "2026-01-07"
+  },
+  {
+    "item_id": "MED-PARA-500",
+    "name": "Paracetamol IV 10mg",
+    "category": "Medication",
+    "location": "Pharmacy Storage",
+    "current_stock": 5,
+    "min_threshold": 20,
+    "unit": "vial",
+    "last_updated": "2026-01-07"
+  },
+  {
+    "item_id": "SURG-GLV-002",
+    "name": "Surgical Gloves (Size M)",
+    "category": "PPE",
+    "location": "Ward 2 (General)",
+    "current_stock": 200,
+    "min_threshold": 100,
+    "unit": "box",
+    "last_updated": "2026-01-06"
+  }
+]
