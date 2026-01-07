@@ -36,5 +36,30 @@ tools = [
             "required": ["item_name", "file_path_supplier"]
         }
     }
+},
+{
+    "type": "function",
+    "function": {
+        "name": "place_order",
+        "description": "Place an order with a supplier for a specific medical item and updates the inventory.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "supplier_name": {
+                    "type": "string",
+                    "description": "The name of the supplier to place the order with."
+                },
+                "item_name": {
+                    "type": "string",
+                    "description": "The name of the item to order."
+                },
+                "quantity": {
+                    "type": "integer",
+                    "description": "The quantity of the item to order."
+                }
+            },
+            "required": ["supplier_name", "item_name", "quantity"]
+        }
+    }
 }
 ]

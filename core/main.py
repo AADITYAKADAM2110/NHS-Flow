@@ -3,6 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from check_stock_function import check_stock
 from get_supplier_function import get_supplier
+from place_order import place_order
 from tools import tools
 
 load_dotenv()
@@ -49,6 +50,9 @@ while True:
                 result = check_stock(filepath)
             elif name == "get_supplier":
                 result = get_supplier(filepath_supplier)
+            elif name == "place_order":
+                args = json.loads(tool_call.function.arguments)
+                result = place_order(args["item_name"], args["quantity"], args["supplier_name"])
 
             else:
                 print(f"\nError: AI tried to call unknown tool '{name}'")
