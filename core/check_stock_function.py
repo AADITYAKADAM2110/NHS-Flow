@@ -1,15 +1,17 @@
+from agents import function_tool
 import json
 
+@function_tool
+def check_stock(file_path: str) -> str:
 
-def check_stock(file_path):
-    """The actual python function that reads the file."""
-    # Logic fix: Only read the file once
+    """Tool to check stock levels in the inventory."""
+    
     try:
         with open(file_path, 'r') as file:
             inventory = json.load(file)
     except FileNotFoundError:
         return "Error: Inventory file not found."
-
+    
     inventory_status = {}
     for item in inventory:
         name = item.get('name')
@@ -22,5 +24,4 @@ def check_stock(file_path):
         else:
             inventory_status[name] = "In Stock"
     
-    return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print
-
+    return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print 

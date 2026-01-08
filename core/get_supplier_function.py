@@ -1,6 +1,11 @@
+from agents import function_tool
 import json
 
-def get_supplier(file_path_supplier):
+   
+
+@function_tool
+def get_supplier(item_name: str, file_path_supplier: str) -> str:
+    
     """The function to get supplier info."""
 
     try:
@@ -10,7 +15,9 @@ def get_supplier(file_path_supplier):
         return "Error: Supplier file not found."
 
     supplier_info = {}
+
     for supplier in suppliers:
+
         name = supplier.get('name')
         nhs_approved = supplier.get('nhs_approved', False)
         supplier_info[name] = "NHS Approved" if nhs_approved else "Not NHS Approved"
@@ -18,6 +25,7 @@ def get_supplier(file_path_supplier):
         supplier_info[name] += f", Cost per unit: {cost_per_unit}"
         delivery_time = supplier.get('delivery_time_hours', 'N/A')
         supplier_info[name] += f", Delivery time (hours): {delivery_time}"
+        
 
     
     return json.dumps(supplier_info) # Return as JSON string for better readability
