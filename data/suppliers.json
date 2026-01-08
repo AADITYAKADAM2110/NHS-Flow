@@ -8,8 +8,12 @@
       "PPE-N95-001": 25.00,
       "MED-PARA-500": 5.50
     },
-    "carbon_footprint": "Medium"
-  },
+    "carbon_footprint": "Medium",
+    "contact": {
+      "email": "medsupplyco@manchester.com",
+      "phone": "+44 1612345678"
+  }
+},
   {
     "supplier_id": "SUP-OS-01",
     "name": "BudgetMedical Global (Overseas)",
@@ -19,8 +23,12 @@
       "PPE-N95-001": 15.00,
       "MED-PARA-500": 3.00
     },
-    "carbon_footprint": "High"
-  },
+    "carbon_footprint": "High",
+    "contact": {
+      "email": "budgetmedicalglobal@overseas.com",
+      "phone": "+44 1234567890"
+  }
+},
   {
     "supplier_id": "SUP-LDN-55",
     "name": "GreenHealth Logistics (London)",
@@ -30,6 +38,10 @@
       "PPE-N95-001": 30.00,
       "MED-PARA-500": 7.00
     },
-    "carbon_footprint": "Low"
+    "carbon_footprint": "Low",
+    "contact": {
+      "email": "greenhealthlogistics@london.com",
+      "phone": "+44 2071234567"
   }
+}
 ]

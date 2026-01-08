@@ -13,15 +13,22 @@ def check_stock(file_path: str) -> str:
         return "Error: Inventory file not found."
     
     inventory_status = {}
+    
     for item in inventory:
-        name = item.get('name')
-        quantity = item.get('current_stock', 0)
-        min_threshold = item.get('min_threshold', 0)
-
-        # Logic fix: Correctly check stock levels
-        if quantity < min_threshold:
-            inventory_status[name] = f"CRITICAL: {quantity} (Need {min_threshold})"
+        item_name = item.get('item_name', 'Unknown Item')
+        quantity = item.get('quantity', 0)
+        critical_threshold = item.get('critical_threshold', 0)
+        
+        if quantity <= critical_threshold:
+            status = "CRITICAL"
         else:
-            inventory_status[name] = "In Stock"
+            status = "Sufficient"
+        
+        inventory_status[item_name] = {
+            "name": item_name,
+            "quantity": quantity,
+            "critical_threshold": critical_threshold,
+            "status": status
+        }
     
     return json.dumps(inventory_status) # Return as JSON string for better readability, don't just print 
