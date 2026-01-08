@@ -1,69 +1,57 @@
-tools = [
-    {
-    "type": "function",
-    "function": {
+check_stock_tool_schema ={
         "name": "check_stock",
-        "description": "Check the inventory stock levels from a JSON file.",
+        "type": "function",
+        "description": "Tool to check stock levels in the inventory.",
         "parameters": {
-            "type": "object",
-            "properties": {
-                "file_path": {
-                    "type": "string",
-                    "description": "The path to the inventory JSON file."
-                }
-            },
-            "required": ["file_path"]
-        }
+            "file_path": {
+                "type": "string",
+                "description": "The path to the inventory JSON file."
+            }
+        },
+        "return_type": "JSON string representing inventory status",
+        "required": ["file_path"]
     }
-},
-    {
-    "type": "function",
-    "function": {
+
+get_supplier_tool_schema ={
         "name": "get_supplier",
-        "description": "Find NHS-approved suppliers for medical items and check delivery times.",
+        "type": "function",
+        "description": "Tool to get NHS-approved suppliers for critical items.",
         "parameters": {
-            "type": "object",
-            "properties": {
-                    "item_name": {
-                        "type": "string",
-                        "description": "The name of the item needed (e.g., 'N95 Respirator Mask')"
-                },
-                "file_path_supplier": {
-                    "type": "string",
-                    "description": "The path to the supplier JSON file."
-                }
+            "item_name": {
+                "type": "string",
+                "description": "The name of the item to find suppliers for."
             },
-            "required": ["item_name", "file_path_supplier"]
-        }
-    }
-},
-{
-    "type": "function",
-    "function": {
+            "file_path": {
+                "type": "string",
+                "description": "The path to the suppliers JSON file."
+            }
+        },
+        "return_type": "JSON string representing supplier information",
+        "required": ["item_name", "file_path"]
+    },
+
+place_order_tool_schema = {
         "name": "place_order",
-        "description": "Place an order with a supplier for a specific medical item and updates the inventory.",
+        "type": "function",
+        "description": "Tool to place orders for items from suppliers and update inventory.",
         "parameters": {
-            "type": "object",
-            "properties": {
-                "supplier_name": {
-                    "type": "string",
-                    "description": "The name of the supplier to place the order with."
-                },
-                "item_name": {
-                    "type": "string",
-                    "description": "The name of the item to order."
-                },
-                "quantity": {
-                    "type": "integer",
-                    "description": "The quantity of the item to order."
-                },
-                "cost_per_unit": {
-                    "type": "number",
-                    "description": "Cost per unit of the item."
-                }
+            "item_name": {
+                "type": "string",
+                "description": "The name of the item to order."
             },
-            "required": ["supplier_name", "item_name", "quantity", "cost_per_unit"]
-        }
+            "quantity": {
+                "type": "integer",
+                "description": "The quantity of the item to order."
+            },
+            "supplier_info": {
+                "type": "set",
+                "description": "The name of the supplier to order from."
+            },
+            "cost_per_unit": {
+                "type": "float",
+                "description": "Cost per unit of the item."
+            }
+        },
+        "return_type": "string indicating success or failure of the order placement",
+        "required": ["item_name", "quantity", "supplier_info", "cost_per_unit"]
     }
-}
-]

@@ -1,10 +1,13 @@
 import json
+from agents import function_tool
 from session_variables import SESSION_BUDGET, TOTAL_SPENT
 
 filepath = r"data/inventory.json"
 
-def place_order(item_name: str, quantity: int, supplier_info, cost_per_unit: float = 0.0) -> str:
-    """
+@function_tool
+def place_order_and_calculate(item_name: str, quantity: int, supplier_info, cost_per_unit: float = 0.0) -> str:
+    
+    tool_description = """
     Simulates placing an order for a given item from a supplier.
     Updates inventory records accordingly.
 
@@ -17,17 +20,19 @@ def place_order(item_name: str, quantity: int, supplier_info, cost_per_unit: flo
 
     global TOTAL_SPENT, SESSION_BUDGET
 
-    total_cost = float(cost_per_unit) * int(quantity)
+    estimated_cost = float(cost_per_unit) * int(quantity)
 
-    if (TOTAL_SPENT + total_cost) > SESSION_BUDGET:
+    if (TOTAL_SPENT + estimated_cost) > SESSION_BUDGET:
         remaining_budget = SESSION_BUDGET - TOTAL_SPENT
-        return f"ERROR: Cannot place order. Budget exceeded by {total_cost - remaining_budget:.2f} GBP. Remaining budget: {remaining_budget:.2f} GBP. Request Manual approval."
+        return f"ERROR: Cannot place order. Budget exceeded by {estimated_cost - remaining_budget:.2f} GBP. Remaining budget: {remaining_budget:.2f} GBP. Request Manual approval."
+    
 
     try: 
         with open(filepath, 'r') as file:
             inventory = json.load(file)
 
         item_found = False
+
         for item in inventory:
             if item['name'].lower() == item_name.lower():
                 item["current_stock"] += quantity
@@ -41,8 +46,8 @@ def place_order(item_name: str, quantity: int, supplier_info, cost_per_unit: flo
         with open(filepath, 'w') as file:
             json.dump(inventory, file, indent=4)
 
-        TOTAL_SPENT += total_cost
-        return f"SUCCESS: Order placed for {quantity} of '{item_name}' from {supplier_info['name']}. Total cost: {total_cost:.2f} GBP. Total spent this session: {TOTAL_SPENT:.2f} GBP."
+        TOTAL_SPENT += estimated_cost
+        return f"SUCCESS: Order placed for {quantity} of '{item_name}' from {supplier_info['name']}. Estimated cost: {estimated_cost:.2f} GBP. Total spent this session: {TOTAL_SPENT:.2f} GBP."
         
     
     except Exception as e:
