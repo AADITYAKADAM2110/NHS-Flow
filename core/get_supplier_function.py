@@ -1,44 +1,65 @@
-from agents import function_tool
 import json
+import os
 
 ordered_items = set()
 
+# --- ABSOLUTE PATH SETUP (Crucial for looking up IDs) ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR) if "core" in BASE_DIR else BASE_DIR
+INVENTORY_PATH = os.path.join(PROJECT_ROOT, "data", "inventory.json")
 
-@function_tool
 def get_supplier(item_name: str, file_path_supplier: str) -> str:
     
-    """The function to get supplier info."""
+    """
+    Finds suppliers for a given item name.
+    1. Looks up the Item ID from inventory.json using the name.
+    2. Searches suppliers.json for that ID.
+    """
+
+     # Debug: Print where we are looking
+    print(f"📂 DEBUG: Procurement looking for '{item_name}'...")
+
+    target_id = None
 
     try:
-        with open(file_path_supplier, 'r') as file:
-            suppliers = json.load(file)
+        with open(INVENTORY_PATH, 'r', encoding='utf-8-sig') as f:
+            inventory = json.load(f)
+            for item in inventory:
+                # robust case-insensitive check
+                name_in_file = item.get("name", "").strip().lower()
+                if name_in_file == item_name.strip().lower():
+                    target_id = item.get("item_id")
+                    print(f"🔄 MAPPING SUCCESS: '{item_name}' -> ID: '{target_id}'")
+                    break
+    except Exception as e:
+        return f"Error reading inventory for ID lookup: {e}"
+    
+    try:
+        with open(file_path_supplier, 'r', encoding='utf-8-sig') as f:
+            suppliers = json.load(f)
     except FileNotFoundError:
         return "Error: Supplier file not found."
 
-    supplier_info = {}
+    available_suppliers = []
 
     for supplier in suppliers:
-        items = supplier.get('items_supplied', [])
-
-        if item_name in items:
-            supplier_info[supplier['supplier_name']] = {
-                "contact": supplier.get('contact', 'N/A'),
-                "items_supplied": items
-            } # this if condition checks if the item is supplied by the supplier
-        else:
-            continue
-
-        supplier_info["note"] = "Ensure to place the order only once per item."
-        supplier_info["ordered_items"] = list(ordered_items)
         
-        if item_name not in ordered_items:
-            ordered_items.add(item_name) # Track ordered items to avoid duplicates
+        costs = supplier.get("cost_per_unit", {})
 
-        supplier_info["cost_per_unit"] = supplier.get('cost_per_unit', 'N/A')
-        supplier_info["name"] = supplier.get('name', 'N/A')
-        supplier_info["nhs_approved"] = supplier.get('nhs_approved', False)
-        supplier_info["delivery_time_hours"] = supplier.get('delivery_time_hours', 'N/A')
-        supplier_info["carbon_footprint"] = supplier.get('carbon_footprint', 'N/A')
+        if target_id in costs:
+            price = costs[target_id]
+            is_approved = "Yes" if supplier.get("nhs_approved") else "No"
 
-    
-    return json.dumps(supplier_info) # Return as JSON string for better readability
+            available_suppliers.append({
+                "supplier": supplier.get("name"),
+                "cost": price,
+                "delivery": f"{supplier.get('delivery_time_hours')} hrs",
+                "nhs_approved": is_approved
+            })
+
+    if not available_suppliers:
+        print(f"⚠️ ID '{target_id}' found, but no suppliers sell it.")
+        return "{}"
+
+    print(f"✅ FOUND {len(available_suppliers)} SUPPLIERS")
+    return json.dumps(available_suppliers)

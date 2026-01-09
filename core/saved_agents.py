@@ -1,5 +1,5 @@
-from agents import Agent
-from instructions import stock_auditor_instructions, procurement_agent_instructions, manager_instructions
+from core_agent import Agent
+from instructions import stock_auditor_instructions, procurement_agent_instructions, manager_instructions, communications_officer_instructions
 from tools import check_stock_tool_schema, get_supplier_tool_schema, place_order_tool_schema
 
 
@@ -16,6 +16,12 @@ procurement_specialist = Agent(
     name="Procurement Specialist",
     instructions=procurement_agent_instructions,
     tools=get_supplier_tool_schema,
+    model="gpt-4.1-nano"
+)
+
+communication_officer = Agent(
+    name="Communication Officer",
+    instructions=communications_officer_instructions,
     model="gpt-4.1-nano"
 )
 

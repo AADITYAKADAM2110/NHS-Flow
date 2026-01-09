@@ -1,23 +1,29 @@
-from agents import function_tool
 import json
+from session_variables import filepath
 
-@function_tool
-def check_stock(file_path: str) -> str:
+
+def check_stock(file_path):
 
     """Tool to check stock levels in the inventory."""
     
+    # Debug: Print where we are looking
+    print(f"📂 DEBUG: Reading file from: {file_path}")
+
     try:
-        with open(file_path, 'r') as file:
+        # 'utf-8-sig' automatically handles the hidden BOM characters from Windows Notepad
+        with open(file_path, 'r', encoding='utf-8-sig') as file:
             inventory = json.load(file)
     except FileNotFoundError:
-        return "Error: Inventory file not found."
+        return f"Error: Inventory file not found at {file_path}"
+    except json.JSONDecodeError:
+        return "Error: Invalid JSON format."
     
     inventory_status = {}
     
     for item in inventory:
-        item_name = item.get('item_name', 'Unknown Item')
-        quantity = item.get('quantity', 0)
-        critical_threshold = item.get('critical_threshold', 0)
+        item_name = item.get('name', 'Unknown Item')
+        quantity = item.get('current_stock', 0)
+        critical_threshold = item.get('min_threshold', 0)
         
         if quantity <= critical_threshold:
             status = "CRITICAL"

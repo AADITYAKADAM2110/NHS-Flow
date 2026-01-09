@@ -1,10 +1,9 @@
 import json
-from agents import function_tool
 from session_variables import SESSION_BUDGET, TOTAL_SPENT
 
 filepath = r"data/inventory.json"
 
-@function_tool
+
 def place_order_and_calculate(item_name: str, quantity: int, supplier_info, cost_per_unit: float = 0.0) -> str:
     
     tool_description = """
