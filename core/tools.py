@@ -1,12 +1,11 @@
-tools = [
-    {
+check_stock_tool_schema = {
     "type": "function",
     "function": {
         "name": "check_stock",
-        "description": "Check the inventory stock levels from a JSON file.",
+        "description": "Tool to check stock levels in the inventory.",
         "parameters": {
-            "type": "object",
-            "properties": {
+            "type": "object",  # <--- Essential
+            "properties": {    # <--- Essential wrapper
                 "file_path": {
                     "type": "string",
                     "description": "The path to the inventory JSON file."
@@ -15,40 +14,38 @@ tools = [
             "required": ["file_path"]
         }
     }
-},
-    {
+}
+
+get_supplier_tool_schema = {
     "type": "function",
     "function": {
         "name": "get_supplier",
-        "description": "Find NHS-approved suppliers for medical items and check delivery times.",
+        "description": "Tool to get NHS-approved suppliers for critical items.",
         "parameters": {
-            "type": "object",
-            "properties": {
-                    "item_name": {
-                        "type": "string",
-                        "description": "The name of the item needed (e.g., 'N95 Respirator Mask')"
-                },
-                "file_path_supplier": {
+            "type": "object",  # <--- Essential
+            "properties": {    # <--- Essential wrapper
+                "item_name": {
                     "type": "string",
-                    "description": "The path to the supplier JSON file."
+                    "description": "The name of the item to find suppliers for."
+                },
+                "file_path_supplier": {  # Make sure this matches your Python function argument name!
+                    "type": "string",
+                    "description": "The path to the suppliers JSON file."
                 }
             },
             "required": ["item_name", "file_path_supplier"]
         }
     }
-},
-{
-    "type": "function",
-    "function": {
+}
+
+place_order_tool_schema = {
+    "type": "function",         # 1. Top level needs type
+    "function": {               # 2. EVERYTHING else goes inside this "function" key
         "name": "place_order",
-        "description": "Place an order with a supplier for a specific medical item and updates the inventory.",
+        "description": "Tool to place orders for items from suppliers and update inventory.",
         "parameters": {
             "type": "object",
             "properties": {
-                "supplier_name": {
-                    "type": "string",
-                    "description": "The name of the supplier to place the order with."
-                },
                 "item_name": {
                     "type": "string",
                     "description": "The name of the item to order."
@@ -57,13 +54,16 @@ tools = [
                     "type": "integer",
                     "description": "The quantity of the item to order."
                 },
+                "supplier_info": {
+                    "type": "string",  # 3. CHANGED "set" to "string" (JSON doesn't have sets)
+                    "description": "The name of the supplier to order from."
+                },
                 "cost_per_unit": {
-                    "type": "number",
+                    "type": "number",  # 4. CHANGED "float" to "number" (JSON uses number for floats)
                     "description": "Cost per unit of the item."
                 }
             },
-            "required": ["supplier_name", "item_name", "quantity", "cost_per_unit"]
+            "required": ["item_name", "quantity", "supplier_info", "cost_per_unit"]
         }
     }
 }
-]

@@ -1,49 +1,51 @@
 import json
-from session_variables import SESSION_BUDGET, TOTAL_SPENT
+import os
+from datetime import datetime
 
-filepath = r"data/inventory.json"
+# --- ABSOLUTE PATH SETUP ---
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR) if "core" in BASE_DIR else BASE_DIR
+INVENTORY_PATH = os.path.join(PROJECT_ROOT, "data", "inventory.json")
 
-def place_order(item_name: str, quantity: int, supplier_info, cost_per_unit: float = 0.0) -> str:
+def place_order(item_name, quantity, supplier_info, cost_per_unit):
     """
-    Simulates placing an order for a given item from a supplier.
-    Updates inventory records accordingly.
-
-    Args:
-        item_name (str): The name of the item to order.
-        quantity (int): The quantity of the item to order.
-        supplier_info (dict): Information about the supplier.
-        cost_per_unit (float): Cost per unit of the item.
+    Places an order and ACTUALLY updates the inventory.json file.
     """
+    print(f"      💾 UPDATING INVENTORY: Adding {quantity} to '{item_name}'...")
 
-    global TOTAL_SPENT, SESSION_BUDGET
-
-    total_cost = float(cost_per_unit) * int(quantity)
-
-    if (TOTAL_SPENT + total_cost) > SESSION_BUDGET:
-        remaining_budget = SESSION_BUDGET - TOTAL_SPENT
-        return f"ERROR: Cannot place order. Budget exceeded by {total_cost - remaining_budget:.2f} GBP. Remaining budget: {remaining_budget:.2f} GBP. Request Manual approval."
-
-    try: 
-        with open(filepath, 'r') as file:
-            inventory = json.load(file)
-
+    try:
+        # 1. Read the file
+        with open(INVENTORY_PATH, 'r', encoding='utf-8-sig') as f:
+            inventory = json.load(f)
+        
         item_found = False
+        
+        # 2. Update the specific item
         for item in inventory:
-            if item['name'].lower() == item_name.lower():
-                item["current_stock"] += quantity
-                item["last_updated"] = "Just Now"
+            # Flexible Name Matching
+            db_name = item.get("name", "").strip().lower()
+            target_name = item_name.strip().lower()
+            
+            if db_name == target_name:
+                # UPDATE THE NUMBERS
+                current = int(item.get("current_stock", 0))
+                new_stock = current + int(quantity)
+                
+                item["current_stock"] = new_stock
+                item["last_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                
+                print(f"      ✅ STOCK UPDATED: {current} -> {new_stock}")
                 item_found = True
                 break
-
+        
         if not item_found:
-            return f"Item '{item_name}' not found in inventory."
-        
-        with open(filepath, 'w') as file:
-            json.dump(inventory, file, indent=4)
+            return f"Error: Item '{item_name}' not found in inventory file."
 
-        TOTAL_SPENT += total_cost
-        return f"SUCCESS: Order placed for {quantity} of '{item_name}' from {supplier_info['name']}. Total cost: {total_cost:.2f} GBP. Total spent this session: {TOTAL_SPENT:.2f} GBP."
-        
-    
+        # 3. Save the file back to disk
+        with open(INVENTORY_PATH, 'w', encoding='utf-8') as f:
+            json.dump(inventory, f, indent=4)
+            
+        return f"SUCCESS: Ordered {quantity}x {item_name} from {supplier_info}. New Stock Level: {new_stock}"
+
     except Exception as e:
-        return f"ERROR: {str(e)}"
+        return f"Error updating inventory file: {e}"
