@@ -4,20 +4,20 @@
         "name": "N95 Respirator Mask",
         "category": "PPE",
         "location": "Ward 4 (ICU)",
-        "current_stock": 20,
+        "current_stock": 61,
         "min_threshold": 50,
         "unit": "box",
-        "last_updated": "Just Now"
+        "last_updated": "2026-01-09 15:59:13"
     },
     {
         "item_id": "MED-PARA-500",
         "name": "Paracetamol IV 10mg",
         "category": "Medication",
         "location": "Pharmacy Storage",
-        "current_stock": 5,
+        "current_stock": 20,
         "min_threshold": 20,
         "unit": "vial",
-        "last_updated": "Just Now"
+        "last_updated": "2026-01-09 15:59:13"
     },
     {
         "item_id": "SURG-GLV-002",
