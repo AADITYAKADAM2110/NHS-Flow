@@ -1,0 +1,47 @@
+[
+  {
+    "supplier_id": "SUP-MANC-99",
+    "name": "MedSupply Co (Manchester)",
+    "nhs_approved": true,
+    "delivery_time_hours": 24,
+    "cost_per_unit": {
+      "PPE-N95-001": 25.00,
+      "MED-PARA-500": 5.50
+    },
+    "carbon_footprint": "Medium",
+    "contact": {
+      "email": "medsupplyco@manchester.com",
+      "phone": "+44 1612345678"
+  }
+},
+  {
+    "supplier_id": "SUP-OS-01",
+    "name": "BudgetMedical Global (Overseas)",
+    "nhs_approved": false,
+    "delivery_time_hours": 72,
+    "cost_per_unit": {
+      "PPE-N95-001": 15.00,
+      "MED-PARA-500": 3.00
+    },
+    "carbon_footprint": "High",
+    "contact": {
+      "email": "budgetmedicalglobal@overseas.com",
+      "phone": "+44 1234567890"
+  }
+},
+  {
+    "supplier_id": "SUP-LDN-55",
+    "name": "GreenHealth Logistics (London)",
+    "nhs_approved": true,
+    "delivery_time_hours": 4,
+    "cost_per_unit": {
+      "PPE-N95-001": 30.00,
+      "MED-PARA-500": 7.00
+    },
+    "carbon_footprint": "Low",
+    "contact": {
+      "email": "greenhealthlogistics@london.com",
+      "phone": "+44 2071234567"
+  }
+}
+]

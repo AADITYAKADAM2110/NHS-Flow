@@ -1,4 +1,3 @@
-import json
 from openai import OpenAI
 from dotenv import load_dotenv
 from saved_agents import manager, communication_officer

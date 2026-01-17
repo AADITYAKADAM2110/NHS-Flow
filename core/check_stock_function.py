@@ -1,5 +1,4 @@
 import json
-from session_variables import filepath
 
 
 def check_stock(file_path):
