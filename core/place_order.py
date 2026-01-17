@@ -34,7 +34,7 @@ def place_order(item_name, quantity, supplier_info, cost_per_unit):
                 item["current_stock"] = new_stock
                 item["last_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 
-                print(f"      ✅ STOCK UPDATED: {current} -> {new_stock}")
+                print(f"      ✅ STOCK WILL BE UPDATED: {current} -> {new_stock}")
                 item_found = True
                 break
         
@@ -45,7 +45,7 @@ def place_order(item_name, quantity, supplier_info, cost_per_unit):
         with open(INVENTORY_PATH, 'w', encoding='utf-8') as f:
             json.dump(inventory, f, indent=4)
             
-        return f"SUCCESS: Ordered {quantity}x {item_name} from {supplier_info}. New Stock Level: {new_stock}"
+        return f"SUCCESS: Ordered {quantity}x {item_name} from {supplier_info}. New Stock Level will be: {new_stock}"
 
     except Exception as e:
         return f"Error updating inventory file: {e}"
