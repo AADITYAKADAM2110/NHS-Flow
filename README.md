@@ -42,8 +42,15 @@ NHS-Flow/
 │   ├── get_supplier_function.py# Logic to map IDs and find prices
 │   └── place_order.py          # Logic to update DB and execute trade
 ├── data/
-│   ├── inventory.json          # The Ground Truth database
+|   |__ generate_data.py        # Generate Realistic database
+|   |
+│   ├── inventory_copy.json     # Copy of the old databse
+|   |__ inventory.json          # The Ground Truth database
+|   |
+|   |__ suppliers_copy.json     # Copy of old database
+|   |
 │   └── suppliers.json          # Vendor price lists
+|             
 ├── .env                        # API Keys (Not shared)
 └── requirements.txt            # Dependencies
 
